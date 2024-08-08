@@ -1,0 +1,46 @@
+class Solution {
+public:
+    int check(string s, int p1, int p2, int &s_p, int &e_p){
+        int count = 0;
+        if(p1 == p2){
+            p1--;
+            p2++;
+            count++;
+        }
+        while(p1>=0 && p2<s.size()){
+            if(s[p1] != s[p2]){
+                s_p=p1+1;
+                e_p=p2-1;
+                return count;
+            }
+            else{
+                p1--;
+                p2++;
+                count+=2;
+            }
+        }
+        s_p = p1+1;
+        e_p = p2-1;
+        return count;
+    }
+    string longestPalindrome(string s) {
+        int s_p=-1, e_p=-1;
+        int length=0;
+        int f_s=-1, f_e=-1;
+        for(int i=0; i<s.size(); i++){
+            int x = check(s,i,i,s_p,e_p);
+            if(x > length){
+                length = x;
+                f_s = s_p;
+                f_e = e_p;
+            }
+            int y = check(s,i,i+1,s_p,e_p);
+            if(y > length){
+                length = y;
+                f_s = s_p;
+                f_e = e_p;
+            }
+        }
+        return s.substr(f_s,f_e-f_s+1);
+    }
+};
