@@ -1,0 +1,19 @@
+class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        ios_base::sync_with_stdio(false);//fast io operation in c++
+        cin.tie(NULL);//fast io operation in c++
+        unordered_map<string, vector<string>>mp;
+        string temp;
+        for(int i=0; i<strs.size(); i++){
+            temp = strs[i];
+            sort(strs[i].begin(), strs[i].end());
+            mp[strs[i]].push_back(temp);
+        }
+        vector<vector<string>> ans;
+        for(auto itr=mp.begin(); itr!=mp.end(); itr++){
+            ans.push_back(itr->second);
+        }
+        return ans;
+    }
+};
