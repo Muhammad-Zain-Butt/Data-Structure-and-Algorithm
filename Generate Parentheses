@@ -1,0 +1,18 @@
+class Solution {
+public:
+
+    void recFunc(vector<string>& ans, int n, int openB, int closeB, string curr){
+        if(curr.size() == n*2){
+            ans.push_back(curr);
+            return;
+        }
+        if(openB < n) recFunc(ans, n , openB+1, closeB, curr+"(");
+        if(closeB < openB) recFunc(ans, n, openB, closeB+1, curr+")");
+    }
+
+    vector<string> generateParenthesis(int n) {
+        vector<string> ans;
+        recFunc(ans, n, 0, 0, "");
+        return ans;
+    }
+};
