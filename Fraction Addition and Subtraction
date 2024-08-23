@@ -32,9 +32,9 @@ public:
                 i++;
             }
             i++;
-            if(isNeg == true) currNume += 1;
+            if(isNeg == true) currNume *= -1;
             while(i<n && isdigit(expression[i])){ //build denomerator
-                int val = expression[i];
+                int val = expression[i] -'0';
                 currDeno = (currDeno*10)+val;
                 i++;
             }
