@@ -1,0 +1,55 @@
+//564. Find the Closest Palindrome
+//Given a string n representing an integer, return the closest integer (not including itself), which is a palindrome. If there is a tie, return the smaller one.
+//The closest is defined as the absolute difference minimized between two integers.
+/* Example 1:
+Input: n = "123"
+Output: "121"
+Example 2:
+Input: n = "1"
+Output: "0"
+Explanation: 0 and 2 are the closest palindromes but we return the smallest which is 0.
+Constraints:
+1 <= n.length <= 18
+n consists of only digits.
+n does not have leading zeros.
+n is representing an integer in the range [1, 1018 - 1]. */
+
+class Solution {
+public:
+    long func(long firstHalf, bool isEven){
+        long resultNum = firstHalf;
+        if(isEven == false) firstHalf /= 10;
+        while(firstHalf){
+            int digit = firstHalf % 10;
+            resultNum = (resultNum*10)+digit;
+            firstHalf /= 10;
+        }
+        return resultNum;
+    }
+    string nearestPalindromic(string n) {
+        int len = n.length();
+        int mid =len/2;
+        int firstHalfLength = (len%2 == 0) ? mid : (mid+1);
+        long firstHalf = stol(n.substr(0, firstHalfLength));
+        vector<long> possibleResult;
+        possibleResult.push_back(func(firstHalf, len%2 == 0));
+        possibleResult.push_back(func(firstHalf+1, len%2 == 0));
+        possibleResult.push_back(func(firstHalf-1, len%2 == 0));
+        possibleResult.push_back((long)pow(10, len-1)-1);
+        possibleResult.push_back((long)pow(10, len)+1);
+        long diff = LONG_MAX;
+        long result = -1;
+        long originalNum = stol(n);
+        for(long num : possibleResult){
+            if(num == originalNum) continue;
+            if(abs(num-originalNum) < diff){
+                diff = abs(num - originalNum);
+                result = num;
+            }
+            else if(abs(num-originalNum) == diff){//tie
+                result = min(result, num);
+            }
+        }
+        return to_string(result);
+    }
+};
