@@ -35,8 +35,8 @@ public:
     vector<vector<int>> spiralMatrix(int m, int n, ListNode* head) {
         vector<vector<int>> matrix(m, vector<int>(n,-1));
         int L=0, R=n-1, T=0, B=m-1;
-        while(L<=R && T<=B){
-            //travering left to right
+        while(head){
+            //traversing left to right
             for(int col=L; col<=R; col++){
                 if(head){
                     matrix[L][col] = head->val;
@@ -52,7 +52,7 @@ public:
                 }
             }
             R--;
-            //travering right to left
+            //traversing right to left
             for(int col=R; T<=B && col>=L; col--){
                 if(head){
                     matrix[B][col] = head->val;
