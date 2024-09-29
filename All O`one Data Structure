@@ -1,0 +1,141 @@
+//432. All O`one Data Structure
+/* Design a data structure to store the strings' count with the ability to return the strings with minimum and maximum counts.
+Implement the AllOne class:
+AllOne() Initializes the object of the data structure
+inc(String key) Increments the count of the string key by 1. If key does not exist in the data structure, insert it with count 1.
+dec(String key) Decrements the count of the string key by 1. If the count of key is 0 after the decrement, remove it from the data structure. It is guaranteed that key exists in the data structure before the decrement.
+getMaxKey() Returns one of the keys with the maximal count. If no element exists, return an empty string "".
+getMinKey() Returns one of the keys with the minimum count. If no element exists, return an empty string "".
+Note that each function must run in O(1) average time complexity.
+Example 1:
+Input
+["AllOne", "inc", "inc", "getMaxKey", "getMinKey", "inc", "getMaxKey", "getMinKey"]
+[[], ["hello"], ["hello"], [], [], ["leet"], [], []]
+Output
+[null, null, null, "hello", "hello", null, "hello", "leet"]
+Explanation
+AllOne allOne = new AllOne();
+allOne.inc("hello");
+allOne.inc("hello");
+allOne.getMaxKey(); // return "hello"
+allOne.getMinKey(); // return "hello"
+allOne.inc("leet");
+allOne.getMaxKey(); // return "hello"
+allOne.getMinKey(); // return "leet"
+Constraints:
+1 <= key.length <= 10
+key consists of lowercase English letters.
+It is guaranteed that for each call to dec, key is existing in the data structure.
+At most 5 * 104 calls will be made to inc, dec, getMaxKey, and getMinKey. */
+
+class AllOne {
+public:
+    struct Node{
+        int count;
+        list<string> keys;
+        Node* next;
+        Node* prev;
+        Node(int c){
+        count = c;
+        next = nullptr;
+        prev = nullptr;
+        }
+    };
+    unordered_map<string, Node*> mp;
+    Node* head;//head->next will be min key string
+    Node* last;//max key string
+
+    void addNode(Node* prevNode, int count){
+        Node* newNode = new Node(count);
+        newNode->next = prevNode->next;
+        newNode->prev = prevNode;
+        if(newNode->next != NULL){
+            newNode->next->prev = newNode;
+        }
+        prevNode->next = newNode;
+        if(prevNode == last){
+            last = newNode;
+        }
+    }
+    void removeNode(Node* node){
+        node->prev->next = node->next;
+        if(node->next != NULL){
+            node->next->prev = node->prev;
+        }
+        if(last == node){
+            last = node->prev;
+        }
+        delete node;
+    }
+    AllOne() {
+        head = new Node(0);
+        last = head;
+    }
+    
+    void inc(string key) {
+        if(mp.find(key) == mp.end()){ //not exist
+            //check if there is already a node with count 1
+            if(head->next==nullptr || head->next->count!=1){
+                addNode(head, 1);
+            }
+            head->next->keys.push_front(key);
+            mp[key] = head->next;
+        } 
+        else{//key is already in map
+            Node* currNode = mp[key];
+            int currCount = currNode->count;
+            if(currNode->next==nullptr || currNode->next->count!=currCount+1){
+                addNode(currNode, currCount+1);
+            }
+            currNode->next->keys.push_front(key);
+            mp[key] = currNode->next;
+            currNode->keys.remove(key);
+            if(currNode->keys.empty()){
+                removeNode(currNode);
+            }
+        }
+    }
+    
+    void dec(string key) {
+        Node* currNode = mp[key];
+        int currCount = currNode->count;
+        //remove the key if count becones 0
+        if(currCount == 1){
+            mp.erase(key);
+        }
+        else{
+            if(currNode->prev->count != currCount-1){
+                addNode(currNode->prev, currCount-1);
+            }
+            currNode->prev->keys.push_front(key);
+            mp[key] = currNode->prev;
+        }
+        currNode->keys.remove(key);
+        if(currNode->keys.empty()){
+            removeNode(currNode);
+        }
+    }
+    
+    string getMaxKey() {
+        if(last == head){
+            return "";
+        }
+        return last->keys.front();
+    }
+    
+    string getMinKey() {
+        if(head->next == nullptr){
+            return "";
+        }
+        return head->next->keys.front();
+    }
+};
+
+/**
+ * Your AllOne object will be instantiated and called as such:
+ * AllOne* obj = new AllOne();
+ * obj->inc(key);
+ * obj->dec(key);
+ * string param_3 = obj->getMaxKey();
+ * string param_4 = obj->getMinKey();
+ */
