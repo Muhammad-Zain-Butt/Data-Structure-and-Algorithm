@@ -16,6 +16,7 @@ Constraints:
 1 <= s.length <= 1000
 s[i] is either '(' or ')'. */
 
+//Method 1 :Using stack
 class Solution {
 public:
     int minAddToMakeValid(string s) {
@@ -24,7 +25,7 @@ public:
         for(auto & p : s){
             if(!st.empty() && p == ')'){
                 st.pop();
-                continue;
+                //continue;
             }
             else if(st.empty() && p == ')'){
                 open++;
@@ -34,6 +35,34 @@ public:
             }
         }
         return open+st.size();
+    }
+};
+static const auto init = []() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    return 0;
+}();
+
+//Method 2 :Use variable instead of stack
+class Solution {
+public:
+    int minAddToMakeValid(string s) {
+        //stack<char> st;
+        int close=0;
+        int open=0;
+        for(auto & p : s){
+            if(close > 0 && p == ')'){
+                close--;//st.pop();
+            }
+            else if(close == 0 && p == ')'){
+                open++;
+            }
+            else{
+                close++;//st.push('(');
+            }
+        }
+        return open+close;
     }
 };
 static const auto init = []() {
