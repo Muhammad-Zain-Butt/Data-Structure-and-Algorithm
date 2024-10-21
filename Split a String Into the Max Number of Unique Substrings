@@ -1,0 +1,56 @@
+//1593. Split a String Into the Max Number of Unique Substrings
+/* Given a string s, return the maximum number of unique substrings that the given string can be split into.
+You can split string s into any list of non-empty substrings, where the concatenation of the substrings forms the original string. 
+However, you must split the substrings such that all of them are unique.
+A substring is a contiguous sequence of characters within a string.
+Example 1:
+Input: s = "ababccc"
+Output: 5
+Explanation: One way to split maximally is ['a', 'b', 'ab', 'c', 'cc']. Splitting like 
+['a', 'b', 'a', 'b', 'c', 'cc'] is not valid as you have 'a' and 'b' multiple times.
+Example 2:
+Input: s = "aba"
+Output: 2
+Explanation: One way to split maximally is ['a', 'ba'].
+Example 3:
+Input: s = "aa"
+Output: 1
+Explanation: It is impossible to split the string any further.
+Constraints:
+1 <= s.length <= 16
+s contains only lower case English letters. */
+
+
+class Solution {
+public:
+    void solve(string &s, int i, unordered_set<string> &st, int currCount, int &maxCount){
+        if(currCount+(s.length()-i)<=maxCount) return;
+        if(i >= s.length()){
+            maxCount = max(maxCount, currCount);
+            return;
+        }
+        for(int j=i; j<s.length(); j++){
+            string sub = s.substr(i, j-i+1);
+            if(st.find(sub) == st.end()){
+                st.insert(sub);//Do
+                solve(s, j+1, st, currCount+1, maxCount);//Explore
+                st.erase(sub);//Undo
+            }
+        }
+    }
+    int maxUniqueSplit(string s) {
+        unordered_set<string> st;
+        int maxCount=0;
+        int i=0;
+        int currCount=0;
+        solve(s, i, st, currCount, maxCount);
+        return maxCount;
+    }
+};
+static const auto init = []() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    return 0;
+}();
+
